@@ -5,7 +5,7 @@ using UnityEngine;
 public class player : MonoBehaviour
 {
 
-    public int color;
+    public int color=1;
     public GameManager gm;
 
     // Start is called before the first frame update
@@ -33,6 +33,7 @@ public class player : MonoBehaviour
 
     public void OnMouseDown()
     {
+        Debug.Log("hola");
         gameObject.GetComponent<Renderer>().material.color = Color.grey;
         gm.SelectedBall(this);
     }
