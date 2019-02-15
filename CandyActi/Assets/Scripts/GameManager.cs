@@ -16,13 +16,13 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        matriz = new player[8][];
+        matriz = new player[7][];
         matriz[0] = new player[7];
 
 
-        for(int i=0; i<8; i++)
+        for(int i=0; i<7; i++)
         {
-            for(int j=0; j<8; j++)
+            for(int j=0; j<7; j++)
             {
                 matriz[i][j] = new player();
             }
