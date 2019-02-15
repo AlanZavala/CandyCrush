@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         {
             for(int j=0; j<7; j++)
             {
-                matriz[i][j] = new player();
+                //matriz[i][j] = new player();
             }
         }
     }
