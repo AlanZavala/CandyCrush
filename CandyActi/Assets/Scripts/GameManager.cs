@@ -24,11 +24,15 @@ public class GameManager : MonoBehaviour
         {
             for(int j=0; j<7; j++)
             {
+<<<<<<< HEAD
                 matriz[i,j]=GameObject.Find("Ball" + k);
 
                 Debug.Log(matriz[i,j].gameObject.GetComponent<player>().color);
                 k++;
                 Debug.Log(k);
+=======
+                //matriz[i][j] = new player();
+>>>>>>> e3a52b2dafce1683dcf555361f3f8a68a547fbb0
             }
         }
     }
