@@ -7,24 +7,28 @@ public class GameManager : MonoBehaviour
 
     private int ballsDestroyed = 0;
 
-    private player[][] matriz;
+    private GameObject[,] matriz;
 
     public player ball1;
     public player ball2;
-
+    private int k = 1;
 
     // Start is called before the first frame update
     void Start()
     {
-        matriz = new player[7][];
-        matriz[0] = new player[7];
+        matriz = new GameObject[7,7];
+
 
 
         for(int i=0; i<7; i++)
         {
             for(int j=0; j<7; j++)
             {
-                matriz[i][j] = new player();
+                matriz[i,j]=GameObject.Find("Ball" + k);
+
+                Debug.Log(matriz[i,j].gameObject.GetComponent<player>().color);
+                k++;
+                Debug.Log(k);
             }
         }
     }
