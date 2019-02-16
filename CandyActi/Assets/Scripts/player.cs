@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class player : MonoBehaviour
 {
+    public int color;
 
-    public int color=1;
     public GameManager gm;
 
     // Start is called before the first frame update
     void Start()
     {
-        if(color == 1)
+       
+
+        if(color == 1 )
         {
             gameObject.GetComponent<Renderer>().material.color = Color.yellow;
         }
@@ -35,6 +37,6 @@ public class player : MonoBehaviour
     {
         Debug.Log("hola");
         gameObject.GetComponent<Renderer>().material.color = Color.grey;
-        gm.SelectedBall(this);
+//        gm.SelectedBall(this);
     }
 }
