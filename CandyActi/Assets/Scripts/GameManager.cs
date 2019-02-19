@@ -114,6 +114,9 @@ public class GameManager : MonoBehaviour
         sball.x = xaux;
         sball.y = yaux;
         sball.name = nameaux;
+
+        //FATA CAMBIARLO REALMENTE EN LA MATRIZ
+
     }
 
     public void Move()
@@ -126,15 +129,94 @@ public class GameManager : MonoBehaviour
 
         fball.transform.position = sball.transform.position;
         sball.transform.position = new Vector3(xaux, yaux, zaux);
-
-
-        fball = null;
-        sball = null;
     }
 
-    public void Check()
+    public bool Check(Ball checkBall)
     {
+        //This method check if there are three blocks together
+        int x = checkBall.x;
+        int y = checkBall.y;
+        int pivote = 1;
 
+        int together = 0;
+
+        int color = checkBall.gameObject.GetComponent<Ball>().color;
+
+        bool can = false;
+
+        while (x<6 && together<2)
+        {
+            if(matriz[x+pivote,y].gameObject.GetComponent<Ball>().color != color)
+            {
+                while (x > 0 && together < 2)
+                {
+                    pivote = 1;
+                    if (matriz[x-pivote, y].gameObject.GetComponent<Ball>().color != color)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        together++;
+                        pivote--;
+                    }
+                }
+                break;
+            }
+            else
+            {
+                together++;
+                pivote++;
+            }
+            
+        }
+
+        if (together == 2)
+        {
+            can = true;
+        }
+        else
+        {
+            together = 0;
+            while (y < 6 && together < 2)
+            {
+                if (matriz[x, y+pivote].gameObject.GetComponent<Ball>().color != color)
+                {
+                    while (y > 0 && together < 2)
+                    {
+                        pivote = 1;
+                        if (matriz[x, y-pivote].gameObject.GetComponent<Ball>().color != color)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            together++;
+                            pivote--;
+                        }
+                    }
+                    break;
+                }
+                else
+                {
+                    together++;
+                    pivote++;
+                }
+
+            }
+            if (together == 2)
+            {
+                can = true;
+            }
+        }
+        
+
+        return can;
+    }
+
+    public void DestroyBalls()
+    {
+        
     }
 
 }
