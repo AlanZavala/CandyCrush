@@ -40,7 +40,8 @@ public class GameManager : MonoBehaviour
                 matriz[i, j] = GameObject.Find(look).gameObject.GetComponent<Ball>().color;
                 GameObject.Find(look).gameObject.GetComponent<Ball>().x = i;
                 GameObject.Find(look).gameObject.GetComponent<Ball>().y = j;
-                k++;              
+                k++;
+                Debug.Log("hola");
             }
         }
     }
