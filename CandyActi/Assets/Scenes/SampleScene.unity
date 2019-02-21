@@ -4164,7 +4164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fball: {fileID: 0}
   sball: {fileID: 0}
-  aux: {fileID: 373313210}
+  exp: {fileID: 6301107140782768852, guid: 2946de1d143ead049b4bdaa130f5750e, type: 3}
   smoothTime: 2
   brokenText: {fileID: 1034376307}
 --- !u!4 &1409890727

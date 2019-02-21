@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public Ball fball;
     public Ball sball;
     LinkedList<GameObject> rows = new LinkedList<GameObject>(); //This list will store the ball that will be destroyed. 
+    public Transform exp;
 
     private int k = 1;
     private Vector2 velocity;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
     private int ballsDestroyed = 0;
     private bool canbeSwaped; //to verify if the ball can swap (they have to together)
     public Text brokenText;
+    private bool vertical = true; //to check how the balls are destroyed
              
 
     // Start is called before the first frame update
@@ -61,8 +63,7 @@ public class GameManager : MonoBehaviour
             Verify();
             if (canbeSwaped)
             {
-                Swap();
-                Move();
+                Play();
                 canbeSwaped = false;
             }
             else
@@ -73,7 +74,38 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Verify()
+    public void Play() //This is where the gmaes's dynamic start
+    {
+        Swap();
+        Move();
+        bool check = Check(fball);
+        if (check)
+        {
+            rows.AddFirst(FindTheBall(sball.gameObject.GetComponent<Ball>().x, sball.gameObject.GetComponent<Ball>().y));
+            DestroyBalls();
+            Debug.Log("la bola 1 sí tiene");
+        }
+        else
+        {
+            check = Check(sball);
+            if (check)
+            {
+                rows.AddFirst(FindTheBall(fball.gameObject.GetComponent<Ball>().x, fball.gameObject.GetComponent<Ball>().y));
+                DestroyBalls();
+                Debug.Log("la bola 2 sí tiene");
+            }
+            else
+            {
+                Debug.Log("Ninguno tiene");
+                Swap();
+                Move();
+            }
+        }
+        fball = null;
+        sball = null;
+    }
+
+    public void Verify() //This method verify if it's possible to swap the ball
     {
         //First check from right to left       
         if (  ((fball.x +1) == sball.x )  || ((fball.x - 1) == sball.x)    )
@@ -139,43 +171,14 @@ public class GameManager : MonoBehaviour
 
     }
 
-    public void Move()
+    public void Move()  //This method physicaly change the position of the balls
     {
         float xaux = fball.transform.position.x;
         float yaux = fball.transform.position.y;
-        float zaux = fball.transform.position.z;
-
-        //aux.transform.position = fball.transform.position;
+        float zaux = fball.transform.position.z;        
 
         fball.transform.position = sball.transform.position;
-        sball.transform.position = new Vector3(xaux, yaux, zaux);
-
-        bool check = Check(fball);
-        if (check)
-        {
-            rows.AddFirst(FindTheBall(sball.gameObject.GetComponent<Ball>().x, sball.gameObject.GetComponent<Ball>().y));
-            DestroyBalls();
-            Debug.Log("la bola 1 sí tiene");
-        }
-        else
-        {            
-            Debug.Log("la bola 1 no tiene");
-            check = Check(sball);
-            if (check)
-            {
-                rows.AddFirst(FindTheBall(fball.gameObject.GetComponent<Ball>().x, fball.gameObject.GetComponent<Ball>().y));
-                DestroyBalls();
-                Debug.Log("la bola 2 sí tiene");
-            }
-            else
-            {
-                Debug.Log("la bola 2 no tiene");
-            }
-        }
-
-        
-        fball = null;
-        sball = null;
+        sball.transform.position = new Vector3(xaux, yaux, zaux);               
     }
 
     public bool Check(Ball checkBall) //This method check if there are three blocks together
@@ -247,7 +250,15 @@ public class GameManager : MonoBehaviour
                     pivote--;
                 }
             }
-        }       
+            if (together == 2)
+            {
+                vertical = false;
+            }
+        }
+        else
+        {
+            vertical = true;
+        }      
 
         if (together == 2)
         {
@@ -265,6 +276,8 @@ public class GameManager : MonoBehaviour
         UpdateDestroyed();
         for(int d=0; d<3; d++)
         {
+            Transform explosion = Instantiate(exp, rows.Last.Value.transform.position, rows.Last.Value.transform.rotation);
+            Destroy(explosion.gameObject, 2.5f);
             Destroy(rows.Last.Value);
             rows.RemoveLast();
         }
@@ -275,4 +288,17 @@ public class GameManager : MonoBehaviour
         return auxMatrix[x, y];
     }
 
+    public void FallBall() //This method move the ball to the bottom
+    {
+        int rows = 0;
+        int columns = 0;
+
+        int auxX1 = fball.gameObject.GetComponent<Ball>().x;
+        int auxY1 = fball.gameObject.GetComponent<Ball>().y;
+
+        int auxX2 = sball.gameObject.GetComponent<Ball>().x;
+        int auxY2 = sball.gameObject.GetComponent<Ball>().y;
+
+       
+    }
 }
