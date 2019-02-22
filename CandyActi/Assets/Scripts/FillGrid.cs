@@ -69,6 +69,7 @@ public class FillGrid : MonoBehaviour
             if(xDiff + yDiff == 1)
             {
                 Debug.Log("try match function");
+                StartCoroutine(TryMatch(SelectedItems, item));
             }
             else
             {
@@ -76,6 +77,12 @@ public class FillGrid : MonoBehaviour
             }
             SelectedItems = null;
         }
+    }
+
+    IEnumerator TryMatch(Grid a, Grid b)
+    {
+        yield return StartCoroutine(Swap(a, b));
+        Debug.Log("Swap candies");
     }
 
     List<Grid> SearchHorizontal(Grid item)
@@ -181,5 +188,41 @@ public class FillGrid : MonoBehaviour
         }
 
         return h;
+    }
+
+    IEnumerator Swap (Grid a, Grid b)
+    {
+        Changerigidbodystatus(false);
+        float moveduration = 0.1f;
+        Vector3 apos = a.transform.position;
+        Vector3 bpos = b.transform.position;
+        StartCoroutine(a.transform.Move(bpos, moveduration));
+        StartCoroutine(b.transform.Move(apos, moveduration));
+        yield return new WaitForSeconds(moveduration);
+        SwapIndices(a, b);
+        Changerigidbodystatus(true);    
+    }
+
+    void SwapIndices(Grid a, Grid b)
+    {
+        Grid aux = items[a.x, a.y];
+        items[a.x, a.y] = b;
+        items[b.x, b.y] = aux;
+        int boldx = b.x;
+        int boldy = b.y;
+
+        b.OnItemPositionChanged(a.x, a.y);
+        a.OnItemPositionChanged(boldx, boldy);
+    }
+
+    void Changerigidbodystatus(bool status)
+    {
+        foreach (Grid g in items)
+        {
+            if(g != null)
+            {
+                g.GetComponent<Rigidbody2D>().isKinematic = !status;
+            }
+        }
     }
 }
