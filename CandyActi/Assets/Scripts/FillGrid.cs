@@ -154,12 +154,12 @@ public class FillGrid : MonoBehaviour
         int left = item.x - 1;
         int right = item.x + 1;
 
-        while(left>=0 && items[left, item.y]!=null && items[left, item.y].id == item.id)
+        while(left>=0 && items[left, item.y]!=null && items[left, item.y].id == item.id && items[left, item.y].tag!="Stone")
         {
             H_items.Add(items[left, item.y]);
             left--;
         }
-        while (right<Xsize && items[right, item.y] != null && items[right, item.y].id == item.id)
+        while (right<Xsize && items[right, item.y] != null && items[right, item.y].id == item.id && items[right, item.y].tag!="Stone")
         {
             H_items.Add(items[right, item.y]);
             right++;
@@ -174,12 +174,12 @@ public class FillGrid : MonoBehaviour
         int lower = item.y - 1;
         int upper = item.y + 1;
 
-        while (lower >= 0 && items[item.x, lower] != null && items[item.x, lower].id == item.id)
+        while (lower >= 0 && items[item.x, lower] != null && items[item.x, lower].id == item.id && items[item.x, lower].tag!="Stone")
         {
             V_items.Add(items[item.x, lower]);
             lower--;
         }
-        while (upper < Ysize && items[item.x, upper ] != null && items[item.x, upper].id == item.id)
+        while (upper < Ysize && items[item.x, upper ] != null && items[item.x, upper].id == item.id  && items[item.x, upper].tag!="Stone")
         {
             V_items.Add(items[item.x, upper]);
             upper++;
