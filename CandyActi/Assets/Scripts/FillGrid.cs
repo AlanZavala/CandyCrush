@@ -59,26 +59,31 @@ public class FillGrid : MonoBehaviour
 
     void OnMouseOverItem(Grid item)
     {
-        if (SelectedItems == null)
+        if (!item.CompareTag("Stone"))
         {
-            Debug.Log("Start point");
-            SelectedItems = item;
-        }
-        else
-        {
-            Debug.Log("end point");
-            float xDiff = Mathf.Abs(item.x - SelectedItems.x);
-            float yDiff = Mathf.Abs(item.y - SelectedItems.y);
-            if(xDiff + yDiff == 1)
+
+
+            if (SelectedItems == null)
             {
-                Debug.Log("try match function");
-                StartCoroutine(TryMatch(SelectedItems, item));
+                Debug.Log("Start point");
+                SelectedItems = item;
             }
             else
             {
-                Debug.Log("error");
+                Debug.Log("end point");
+                float xDiff = Mathf.Abs(item.x - SelectedItems.x);
+                float yDiff = Mathf.Abs(item.y - SelectedItems.y);
+                if (xDiff + yDiff == 1)
+                {
+                    Debug.Log("try match function");
+                    StartCoroutine(TryMatch(SelectedItems, item));
+                }
+                else
+                {
+                    Debug.Log("error");
+                }
+                SelectedItems = null;
             }
-            SelectedItems = null;
         }
     }
 
@@ -94,13 +99,13 @@ public class FillGrid : MonoBehaviour
             yield return StartCoroutine(Swap(a, b));
             yield break;
         }
-        if (matchA.ValidMatch)
+        if (matchA.ValidMatch && !a.CompareTag("Stone"))
         {
             Debug.Log("Match");
             yield return StartCoroutine(DestroyBall(matchA.match));
             yield return new WaitForSeconds(delaybetween);
             yield return StartCoroutine(UpdateGrid(matchA));
-        }else if (matchB.ValidMatch)
+        }else if (matchB.ValidMatch && !a.CompareTag("Stone"))
         {
             Debug.Log("Not Match");
             yield return StartCoroutine(DestroyBall(matchB.match));
@@ -117,9 +122,16 @@ public class FillGrid : MonoBehaviour
         {
             if (i != null)
             {
-                yield return StartCoroutine(i.transform.Scale(Vector3.zero, 0.045f));
-                Destroy(i.gameObject);
-                ballsDestroyed++;
+                if (i.gameObject.CompareTag("Stone")) { 
+                    Debug.Log("ruben");
+
+                }
+                else{
+                    yield return StartCoroutine(i.transform.Scale(Vector3.zero, 0.045f));
+                    Destroy(i.gameObject);
+                    ballsDestroyed++;
+                }
+
             }
         }
         ct.UpdateBallsDestroyed(ballsDestroyed);
