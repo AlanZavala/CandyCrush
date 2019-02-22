@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 958920931739056147}
   - component: {fileID: 7261295057380738137}
   - component: {fileID: 280124889402419925}
+  - component: {fileID: 5042917020994533035}
   - component: {fileID: 248621857824529464}
   m_Layer: 0
   m_Name: ball_4
@@ -102,6 +103,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!114 &5042917020994533035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6643084393014482502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bd9b17bfe1b6a347832a60983f0d156, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
 --- !u!61 &248621857824529464
 BoxCollider2D:
   m_ObjectHideFlags: 0
