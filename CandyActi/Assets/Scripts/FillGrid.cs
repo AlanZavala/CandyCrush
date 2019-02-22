@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class FillGrid : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class FillGrid : MonoBehaviour
 
     private Grid SelectedItems;
     public static int minitemformatch = 3;
+    public float delaybetween = 0.2f;
     // Start is called before the first frame update
     void Start()
     {
@@ -83,6 +85,40 @@ public class FillGrid : MonoBehaviour
     {
         yield return StartCoroutine(Swap(a, b));
         Debug.Log("Swap candies");
+        Match matchA = GetMatch(a);
+        Match matchB = GetMatch(b);
+
+        if(!matchA.ValidMatch && !matchB.ValidMatch)
+        {
+            yield return StartCoroutine(Swap(a, b));
+            yield break;
+        }
+        if (matchA.ValidMatch)
+        {
+            Debug.Log("Match");
+            yield return StartCoroutine(DestroyBall(matchA.match));
+            yield return new WaitForSeconds(delaybetween);
+            yield return StartCoroutine(UpdateGrid(matchA));
+        }else if (matchB.ValidMatch)
+        {
+            Debug.Log("Not Match");
+            yield return StartCoroutine(DestroyBall(matchB.match));
+            yield return new WaitForSeconds(delaybetween);
+            yield return StartCoroutine(UpdateGrid(matchB));
+
+        }
+    }
+
+    IEnumerator DestroyBall(List<Grid> items)
+    {
+        foreach(Grid i in items)
+        {
+            if (i != null)
+            {
+                yield return StartCoroutine(i.transform.Scale(Vector3.zero, 0.045f));
+                Destroy(i.gameObject);
+            }
+        }
     }
 
     List<Grid> SearchHorizontal(Grid item)
@@ -176,14 +212,14 @@ public class FillGrid : MonoBehaviour
         {
             h.matchstartingX = GetMinimumX(hmatch);
             h.matchendX = GetMaximumX(hmatch);
-            h.matchstartingY = h.matchendY = hmatch[0].x;
+            h.matchstartingY = h.matchendY = hmatch[0].y;
             h.match = hmatch;
         }
         else if (vmatch.Count>=minitemformatch)
         {
             h.matchstartingY = GetMinimumY(vmatch);
             h.matchendY = GetMaximumY(vmatch);
-            h.matchstartingX = h.matchendX = vmatch[0].y;
+            h.matchstartingX = h.matchendX = vmatch[0].x;
             h.match = vmatch;
         }
 
@@ -222,6 +258,65 @@ public class FillGrid : MonoBehaviour
             if(g != null)
             {
                 g.GetComponent<Rigidbody2D>().isKinematic = !status;
+            }
+        }
+    }
+
+
+    //Instantiate new candies 
+    IEnumerator UpdateGrid(Match match)
+    {
+        if(match.matchstartingY == match.matchendY)
+        {
+            //horizontal match
+            for(int x=match.matchstartingX; x<=match.matchendX; x++)
+            {
+                for(int y=match.matchstartingY; y<Ysize-1; y++)
+                {
+                    Grid upperindes = items[x, y + 1];
+                    Grid current = items[x, y];
+                    items[x, y] = upperindes;
+                    items[x, y + 1] = current;
+                    items[x, y].OnItemPositionChanged(items[x, y].x, items[x, y].y - 1);
+                }
+                items[x, Ysize - 1] = instantiate_candies(x, Ysize-1);
+            }
+        }
+        else if(match.matchendX == match.matchstartingX)
+        {
+            //vertical match
+            int matchHeight = 1 + (match.matchendY- match.matchstartingY);
+            for (int y= match.matchstartingY+ matchHeight; y<=Ysize-1; y++)
+            {
+                Grid Lowerindex = items[match.matchstartingX, y - matchHeight];
+                Grid current = items[match.matchstartingX, y];
+                items[match.matchstartingX, y-matchHeight] = current;
+                items[match.matchstartingX, y] = Lowerindex;
+            }
+            for(int y=0; y<Ysize-matchHeight; y++)
+            {
+                items[match.matchstartingX, y].OnItemPositionChanged(match.matchstartingX, y);
+            }
+            for(int i=0; i<match.match.Count; i++)
+            {
+                items[match.matchstartingX, (Ysize - 1) - i] = instantiate_candies(match.matchstartingX, (Ysize-1)-i);
+
+            }
+        }
+
+        for(int x=0; x<Xsize; x++)
+        {
+            for(int y=0; y<Ysize; y++)
+            {
+                Match matchinfo = GetMatch(items[x, y]);
+                if (matchinfo.ValidMatch)
+                {
+                    yield return new WaitForSeconds(delaybetween);
+                    yield return StartCoroutine(DestroyBall(matchinfo.match));
+                    yield return new WaitForSeconds(delaybetween);
+                    yield return StartCoroutine(UpdateGrid(matchinfo));
+                    yield return new WaitForSeconds(delaybetween);
+                }
             }
         }
     }
