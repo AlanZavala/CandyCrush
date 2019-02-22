@@ -13,6 +13,7 @@ public class FillGrid : MonoBehaviour
     private Grid SelectedItems;
     public static int minitemformatch = 3;
     public float delaybetween = 0.2f;
+    public CounterText ct;
     // Start is called before the first frame update
     void Start()
     {
@@ -111,14 +112,17 @@ public class FillGrid : MonoBehaviour
 
     IEnumerator DestroyBall(List<Grid> items)
     {
+        int ballsDestroyed = 0;
         foreach(Grid i in items)
         {
             if (i != null)
             {
                 yield return StartCoroutine(i.transform.Scale(Vector3.zero, 0.045f));
                 Destroy(i.gameObject);
+                ballsDestroyed++;
             }
         }
+        ct.UpdateBallsDestroyed(ballsDestroyed);
     }
 
     List<Grid> SearchHorizontal(Grid item)
