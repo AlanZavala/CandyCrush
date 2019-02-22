@@ -129,10 +129,11 @@ public class FillGrid : MonoBehaviour
                 else{
                     yield return StartCoroutine(i.transform.Scale(Vector3.zero, 0.045f));
                     if (i.gameObject.CompareTag("Mushroom")) {
-                        FillGrid1();
+
                         Destroy(i.gameObject);
                         ballsDestroyed++;
-
+                        ChangeColors();
+                        FillGrid1();
 
                     }
                     else
@@ -344,6 +345,12 @@ public class FillGrid : MonoBehaviour
                     yield return new WaitForSeconds(delaybetween);
                 }
             }
+        }
+    }
+    void ChangeColors() {
+        foreach (Grid i in items)
+        {
+            Destroy(i.gameObject);
         }
     }
 }
