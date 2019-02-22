@@ -134,6 +134,7 @@ public class FillGrid : MonoBehaviour
                         ballsDestroyed++;
                         ChangeColors();
                         FillGrid1();
+                        Revaluate();
 
                     }
                     else
@@ -348,9 +349,32 @@ public class FillGrid : MonoBehaviour
         }
     }
     void ChangeColors() {
-        foreach (Grid i in items)
+        int counter = 0;
+        foreach(Grid i in items)
         {
             Destroy(i.gameObject);
+            //counter++;
+            //if (counter==49) {
+            //    break;
+            //}
+            //Debug.Log("counter: "+counter);
+        }
+    }
+    IEnumerator Revaluate() {
+        for (int x = 0; x < Xsize; x++)
+        {
+            for (int y = 0; y < Ysize; y++)
+            {
+                Match matchinfo = GetMatch(items[x, y]);
+                if (matchinfo.ValidMatch)
+                {
+                    yield return new WaitForSeconds(delaybetween);
+                    yield return StartCoroutine(DestroyBall(matchinfo.match));
+                    yield return new WaitForSeconds(delaybetween);
+                    yield return StartCoroutine(UpdateGrid(matchinfo));
+                    yield return new WaitForSeconds(delaybetween);
+                }
+            }
         }
     }
 }
