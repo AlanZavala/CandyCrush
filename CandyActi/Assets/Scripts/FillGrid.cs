@@ -9,7 +9,8 @@ public class FillGrid : MonoBehaviour
     private Grid[,] items;
     public int Xsize;
     public int Ysize;
-
+    private bool targetPower = false;
+    private List<Grid> targetList = new List<Grid>();  
     private Grid SelectedItems;
     public static int minitemformatch = 3;
     public float delaybetween = 0.2f;
@@ -31,10 +32,10 @@ public class FillGrid : MonoBehaviour
     void GetCandies()
     {
         candies = Resources.LoadAll<GameObject>("Prefabs");
-        for(int i=0; i<candies.Length; i++)
-        {
-            candies[i].GetComponent<Grid>().id = i;
-        }
+        //for(int i=0; i<candies.Length; i++)
+        //{
+        //    candies[i].GetComponent<Grid>().id = i;
+        //}
     }
 
     void FillGrid1()
@@ -59,32 +60,41 @@ public class FillGrid : MonoBehaviour
 
     void OnMouseOverItem(Grid item)
     {
-        if (!item.CompareTag("Stone"))
+        if (!targetPower)
         {
+            if (!item.CompareTag("Stone"))
+            {
 
 
-            if (SelectedItems == null)
-            {
-                Debug.Log("Start point");
-                SelectedItems = item;
-            }
-            else
-            {
-                Debug.Log("end point");
-                float xDiff = Mathf.Abs(item.x - SelectedItems.x);
-                float yDiff = Mathf.Abs(item.y - SelectedItems.y);
-                if (xDiff + yDiff == 1)
+                if (SelectedItems == null)
                 {
-                    Debug.Log("try match function");
-                    StartCoroutine(TryMatch(SelectedItems, item));
+                    Debug.Log("Start point");
+                    SelectedItems = item;
                 }
                 else
                 {
-                    Debug.Log("error");
+                    Debug.Log("end point");
+                    float xDiff = Mathf.Abs(item.x - SelectedItems.x);
+                    float yDiff = Mathf.Abs(item.y - SelectedItems.y);
+                    if (xDiff + yDiff == 1)
+                    {
+                        Debug.Log("try match function");
+                        StartCoroutine(TryMatch(SelectedItems, item));
+                    }
+                    else
+                    {
+                        Debug.Log("error");
+                    }
+                    SelectedItems = null;
                 }
-                SelectedItems = null;
             }
         }
+        else
+        {
+            targetList.Add(item);
+            Debug.Log(targetList.Count);
+        }
+
     }
 
     IEnumerator TryMatch(Grid a, Grid b)
@@ -118,7 +128,19 @@ public class FillGrid : MonoBehaviour
     IEnumerator DestroyBall(List<Grid> items)
     {
         int ballsDestroyed = 0;
-        foreach(Grid i in items)
+        int countMash = 0;
+        foreach (Grid i in items)
+        {
+            if (i != null) {
+                if (i.gameObject.CompareTag("Mushroom"))
+                {
+                    countMash++;
+
+                }
+            }
+        }
+
+            foreach (Grid i in items)
         {
             if (i != null)
             {
@@ -128,13 +150,22 @@ public class FillGrid : MonoBehaviour
                 }
                 else{
                     yield return StartCoroutine(i.transform.Scale(Vector3.zero, 0.045f));
-                    if (i.gameObject.CompareTag("Mushroom")) {
+                    if (countMash>0) {
 
-                        Destroy(i.gameObject);
-                        ballsDestroyed++;
+                        //Destroy(i.gameObject);
+                        //ballsDestroyed++;
                         ChangeColors();
                         FillGrid1();
-                        Revaluate();
+                        //Revaluate();
+
+                    }
+                    else if (i.gameObject.CompareTag("Target"))
+                    {
+                        targetPower = true;
+                        Destroy(i.gameObject);
+                        ballsDestroyed++;
+                        StartCoroutine("DelayTarget");
+                        Debug.Log("Target Power");
 
                     }
                     else
@@ -148,6 +179,21 @@ public class FillGrid : MonoBehaviour
         }
         ct.UpdateBallsDestroyed(ballsDestroyed);
     }
+    IEnumerator DelayTarget()
+    {
+        yield return new WaitForSeconds(10);
+        targetPower = false;
+        Debug.Log("La lista contiene : " + targetList.Count);
+        DestroyBall(targetList);
+        targetList.Clear();
+        Debug.Log("Finish");
+    }
+
+
+    /*void DestroySelected(List<Grid>targetBalls)
+    {
+        DestroyBall(targetBalls);
+    }*/
 
     List<Grid> SearchHorizontal(Grid item)
     {

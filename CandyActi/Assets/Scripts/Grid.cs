@@ -16,7 +16,6 @@ public class Grid : MonoBehaviour
         private set; 
     }
 
-    [HideInInspector]
     public int id; 
     
     public void OnItemPositionChanged(int newX, int newY)
