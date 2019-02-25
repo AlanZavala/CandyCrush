@@ -92,7 +92,8 @@ public class FillGrid : MonoBehaviour
         else
         {
             targetList.Add(item);
-            Debug.Log(targetList.Count);
+            DestroyBall(targetList);
+            targetList.Clear();
         }
 
     }
@@ -181,11 +182,11 @@ public class FillGrid : MonoBehaviour
     }
     IEnumerator DelayTarget()
     {
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(3);
         targetPower = false;
-        Debug.Log("La lista contiene : " + targetList.Count);
-        DestroyBall(targetList);
-        targetList.Clear();
+        //Debug.Log("La lista contiene : " + targetList.Count);
+        //DestroyBall(targetList);
+        //targetList.Clear();
         Debug.Log("Finish");
     }
 
